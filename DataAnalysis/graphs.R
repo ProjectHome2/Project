@@ -6,7 +6,7 @@
 
 load("homeFull.RData")
 
-head(home)
+head(home) 
 range(home[,3])
 unique(home[,3])
 names(home)
