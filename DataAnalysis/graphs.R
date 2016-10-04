@@ -1,78 +1,79 @@
 #Hvis run from R 
 #dir <- dirname(parent.frame(2)$ofile)
 #setwd(dir)
-home = HOME2
 #Hvis R studio
 #setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-#load("home.RData")
+load("homeFull.RData")
 
 head(home)
 range(home[,3])
 unique(home[,3])
-range(home$EjdType)
 names(home)
 
-#Important: Run dplyr
+#Load packages
 library(dplyr)
+library(ggplot2)
 
 
 #Vigtig: Se paa type af variable: Hvilke type, ex liggetid er difftime. Evt aendrer hvis unoedvendigt.
 #Hvad indeholder de: Range, NA?, Hvordan tolkes?
 str(home)
 summary(home)
-table(home$EjdType, useNA = "always")
+table(home$Type, useNA = "always")
 
+#Information about the data
+sapply(home, table, useNA = "always")
 
-#vi deler datasaet op i to dele
-home_lejlighed = home %>% filter(EjdType == "Ejerlejlighed")
-home_villa= home %>% filter(EjdType == "Villa, 1 fam.")
-
-#vi finder information
-sapply(home_lejlighed, table, useNA = "always")
-sapply(home_villa, table, useNA = "always")
-
-ggplot(home, aes(x=Postnr)) + geom_histogram(binwidth=5)
-ggplot(home, aes(x=Kontantpris)) + geom_histogram(binwidth=1e5)
-ggplot(home, aes(x=log(Kontantpris))) + geom_histogram(binwidth=0.05)
+ggplot(home, aes(x=PostalCode)) + geom_histogram(binwidth=5)
+ggplot(home, aes(x=Price)) + geom_histogram(binwidth=1e5)
+ggplot(home, aes(x=log(Price))) + geom_histogram(binwidth=0.05)
 
 ###########################################################################
+#
 
-l_nytk = ggplot(home_lejlighed, aes(x=NytKokken)) + geom_histogram()
-v_nytk = ggplot(home_villa, aes(x=NytKokken)) + geom_histogram()
+newk = ggplot(home, aes(x=NewKitchen)) + geom_bar(stat = "count")
 
-l_nytv = ggplot(home_lejlighed, aes(x=NyeVinduer)) + geom_histogram()
-v_nytv = ggplot(home_villa, aes(x=NyeVinduer)) + geom_histogram()
+neww = ggplot(home, aes(x=NewWindows)) + geom_bar(stat = "count")
 
-l_taet = ggplot(home_lejlighed, aes(x=TaetVedVand)) + geom_histogram()
-v_taet = ggplot(home_villa, aes(x=TaetVedVand)) + geom_histogram()
+closeto = ggplot(home, aes(x=CloseToWater)) + geom_bar(stat = "count")
 
-l_nytb = ggplot(home_lejlighed, aes(x=NytBadevaerelse)) + geom_histogram()
-v_nytb = ggplot(home_villa, aes(x=NytBadevaerelse)) + geom_histogram()
+newb = ggplot(home, aes(x=NewBathroom)) + geom_bar(stat = "count")
 
-l_antalt = ggplot(home_lejlighed, aes(x=AntalToiletter)) + geom_histogram()
-v_antalt = ggplot(home_villa, aes(x=AntalToiletter)) + geom_histogram()
+numbert = ggplot(home, aes(x=as.factor(NumberOfToilets))) + geom_bar(stat = "count") + labs(x = "NumberOfToilets")
 
-l_antals = ggplot(home_lejlighed, aes(x=AntalSovevaerelser)) + geom_histogram()
-v_antals = ggplot(home_villa, aes(x=AntalSovevaerelser)) + geom_histogram()
+numberbed = ggplot(home, aes(x=as.factor(NumberOfBedrooms))) + geom_bar(stat = "count") + labs(x = "NumberOfBedrooms")
 
-l_manget = ggplot(home_lejlighed, aes(x=MangeToil)) + geom_histogram()
-v_manget = ggplot(home_villa, aes(x=MangeToil)) + geom_histogram()
+manyt = ggplot(home, aes(x=ManyToilets)) + geom_bar(stat = "count")
 
-l_garage = ggplot(home_lejlighed, aes(x=GarageCarport)) + geom_histogram()
-v_garage = ggplot(home_villa, aes(x=GarageCarport)) + geom_histogram()
+garage = ggplot(home, aes(x=Garage)) + geom_bar(stat = "count")
 
-l_ombyg = ggplot(home_lejlighed, aes(x=as.character(OmbygningSket))) + geom_histogram()
-v_ombyg = ggplot(home_villa, aes(x=as.character(OmbygningSket))) + geom_histogram()
+reno = ggplot(home, aes(x=Renovation)) + geom_bar(stat = "count")
 
-library(gridExtra)
-grid.arrange(l_nytk, l_nytv, l_taet, l_nytb, l_antalt, l_antals, l_manget, l_garage, l_ombyg, 
-          v_nytk, v_nytv, v_taet, v_nytb, v_antalt, v_antals, v_manget, v_garage, v_ombyg,
-          ncol = 2)
+#############
 
-grid.arrange(l_nytk, l_nytv, l_taet, l_nytb, l_antalt, l_antals, l_manget, l_garage, l_ombyg, 
+
+lev = ggplot(home, aes(x=as.factor(Levels))) + geom_bar(stat = "count") + labs(x = "Levels")
+
+bal = ggplot(home, aes(x=Balcony)) + geom_bar(stat = "count")
+
+large = ggplot(home, aes(x=LargeGround)) + geom_bar(stat = "count")
+
+high = ggplot(home, aes(x=HighHouse)) + geom_bar(stat = "count")
+
+quart = ggplot(home, aes(x=Quarter)) + geom_bar(stat = "count")
+
+
+grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno, 
              ncol = 3)
+
+grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno, lev, bal, large, high, quart, 
+             ncol = 4)
 ###########################################################################
+#Boxplotting
+ggplot(home, aes(as.factor(YearOfSale), Price)) + geom_boxplot()
+
+
 
 #Aendring af variabeltype
 home = home; home$Salgsdato = as.Date(home$Salgsdato, "%d-%m-%Y")
