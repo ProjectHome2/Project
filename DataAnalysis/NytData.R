@@ -49,7 +49,7 @@ for(i in 1:length(home)){
 
 #Do we want to save as log(price) or not 
 #home$Price = log(home$Price)
-#names(home)[5] = "LogPrice"
+#names(home)[5] = "LogPrice" 
 
 
 #Either save as R.data or csv
