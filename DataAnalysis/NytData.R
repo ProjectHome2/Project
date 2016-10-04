@@ -47,7 +47,7 @@ for(i in 1:length(home)){
   names(home)[i] = name[i]
 }
 
-#Do we want to save as log(price) or not
+#Do we want to save as log(price) or not 
 #home$Price = log(home$Price)
 #names(home)[5] = "LogPrice"
 
